@@ -1,0 +1,1 @@
+$(".window").draggable({ stack: "#windows div", handle: "div.handle"});
