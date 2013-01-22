@@ -17,4 +17,24 @@ Message.statics.getMessagesBetweenUsers = function(userId, otherUserId, cb) {
              ] }, cb);
 } 
 
+Message.statics.getMessage = function(userId, messageId) {
+    this.findOne({ $or: [ 
+            {from: userId},
+            {to: userId}
+             ], _id: messageId }, cb);
+}
+
+Message.statics.sendMessage = function(from, to, message) {
+    var message = new Message();
+    message.from = from;
+    message.to = to;
+    message.message = message;
+    message.save();
+}
+
+Message.methods.markAsRead = function() {
+    this.unread = false;
+    this.save();
+}
+
 module.exports = mongoose.model('messages', Message);

@@ -68,5 +68,6 @@ module.exports = function(app) {
 	
 	app.get('/users', users.getAllUsers);
 	app.get('/users/:userId', users.getUser);
+	app.get('/messages/:messageId', messages.getMessage);
 	app.get('/messages/user/:otherUser', messages.getAllMessages);
 }
