@@ -32,11 +32,7 @@ exports.sendMessage = function(req, res) {
                 socket.emit('newMessage', { from: message.from, id: message.id });
             }
             
-            res.json({ status: 'OK' });
-            
-            return;
+            res.json(message);
         }
-        
-        res.json({ status: 'ERROR' });
     });
 }

@@ -31,6 +31,35 @@ function createUserList() {
 
 var users = new Object();
 
+function processMessage(message) {
+    if (users[message.from] === undefined) {
+        $.ajax({
+            type: 'GET',
+            url: '/users/' + message.from,
+            dataType: 'json',
+            success: function(user) {
+                users[message.from] = user.username;
+            },
+            async: false
+        });
+    }
+    
+    var date = new Date(message.date);
+    var messageHtml = '<div class="message"><span class="author">' + users[message.from] + '</span><span class="date">' + dateFormat(date, 'H:MM, d mmmm yyyy') + '</span><span class="text">' + message.message + '</span></div>';
+    
+    return messageHtml;
+}
+
+function scrollMessagesToBottom(messageContainer) {
+    messageContainer.scrollTop(100000000); // workaround - looking for fix
+}
+
+function appendToMessages(parent, appended) {
+    parent.append(appended);
+            
+    scrollMessagesToBottom(parent);
+}
+
 function loadMessages(userId) {
     var parent = $('#window' + userId + ' .messages');
     
@@ -39,24 +68,20 @@ function loadMessages(userId) {
             var msgs = [];
             
             $.each(messages, function(key, message) {
-                if (users[message.from] === undefined) {
-                    $.ajax({
-                        type: 'GET',
-                        url: '/users/' + message.from,
-                        dataType: 'json',
-                        success: function(user) {
-                            users[message.from] = user.username;
-                        },
-                        async: false
-                    });
-                }
-            
-                var date = new Date(message.date);
-                msgs.push('<div class="message"><span class="author">' + users[message.from] + '</span><span class="date">' + dateFormat(date, 'H:MM, d mmmm yyyy') + '</span><span class="text">' + message.message + '</span></div>');
+                msgs.push(processMessage(message));
             });
             
-            parent.append(msgs.join(''));
+            appendToMessages(parent, msgs.join(''));
     }); 
+}
+
+function loadMessage(messageId, userId) {
+    $.getJSON('/messages/' + messageId,
+        function(message) {
+            var parent = $('#window' + userId + ' .messages');
+            
+            appendToMessages(parent, processMessage(message));         
+    });
 }
 
 function createChatWindow(userId) {   
@@ -72,17 +97,21 @@ function createChatWindow(userId) {
             
             loadMessages(userId);
             
+             $('#user' + userId + ' .unread').remove();
+            
 		    $('#form' + user._id).submit(function() {
 	
 			    var link = $(this).attr('action');
 			
 			    $.ajax({
 			        url: link,
-			        type: "POST",
+			        type: 'POST',
 			        data: $(this).serialize(),
-			        dataType: "html",         
-			        success: function() {
+			        dataType: 'json',         
+			        success: function(data) {
 			            $('#message' + user._id).val('');
+			            
+			            appendToMessages($('#window' + user._id + ' .messages'), processMessage(data));
 			        }
 			    });
 			
@@ -110,7 +139,7 @@ socket.on('newMessage', function(data) {
     var chatWindow = $('#window' + data.from);
 
     if (chatWindow.length != 0) {
-        
+        loadMessage(data.id, data.from);
     } else {
         incrementMessageCounter(data.from);
     }

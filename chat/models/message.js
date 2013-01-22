@@ -17,7 +17,7 @@ Message.statics.getMessagesBetweenUsers = function(userId, otherUserId, cb) {
              ] }, cb);
 } 
 
-Message.statics.getMessage = function(userId, messageId) {
+Message.statics.getMessage = function(userId, messageId, cb) {
     this.findOne({ $or: [ 
             {from: userId},
             {to: userId}
