@@ -2,7 +2,6 @@ var express                = require('express'),
 	app                    = express(),
 	compiless              = require('express-compiless'),
 	server                 = require('http').createServer(app),
-	io                     = require('socket.io').listen(server),
 	passport               = require('passport'),
 	passportLocal          = require('passport-local'),
 	LocalStrategy          = passportLocal.Strategy,
@@ -10,9 +9,14 @@ var express                = require('express'),
 	Schema                 = mongoose.Schema,
 	passportLocalMongoose  = require('passport-local-mongoose'),
 	User                   = require('./models/user'),
+	passportSocketIo       = require("passport.socketio"),
+	MongoStore             = require('connect-mongo')(express),
 	staticRoot             = __dirname + "/public";
 	
-server.listen(81);
+// globals
+
+global.io = require('socket.io').listen(server);
+global.connectedUsers  = {};
 
 // passport strategy
 
@@ -36,10 +40,33 @@ app.use(express.logger());
 app.use(express.bodyParser());
 
 app.use(express.cookieParser('totally unguessable secret'));
-app.use(express.session());
+
+var sessionStore = new MongoStore({
+    db: 'test'
+});
+
+app.use(express.session({
+    secret: 'totally unguessable secret',
+    store: sessionStore
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// socket
+
+global.io.set("authorization", passportSocketIo.authorize({
+    sessionKey:    'connect.sid',      
+    sessionStore:  sessionStore, 
+    sessionSecret: 'totally unguessable secret',
+    success: function(data, accept) {
+      accept(null, true);
+    }
+  }));
+
+global.io.sockets.on("connection", function(socket){
+    global.connectedUsers[socket.handshake.user.id] = socket;
+});
 
 //routes
 var routes = require('./routes');
@@ -48,4 +75,8 @@ routes(app);
 // db connection
 mongoose.connect('mongodb://localhost/test');   
 
+    
+// start server
+    
+server.listen(81);
 console.log('Listening on port 81');

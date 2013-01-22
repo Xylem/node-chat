@@ -1,5 +1,10 @@
-body {
+html, body {
+    height: 99%;
+}
+
+#content {
     padding: 5px;
+    height: 100%;
 }
 
 .window {
@@ -19,17 +24,35 @@ body {
     }
     
     .chatForm {
-        input {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        
+        .inputWrapper {   
             position: absolute;
-            bottom: 0;
-            height: auto;
-            margin-bottom: 5px;
-            margin-right: 0;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            margin: 0;
+            
+            input {
+                height: 30px;
+                margin: 0;
+                width: 100%;
+                box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+            }
         }
     }
     
     .messages {
-        overflow-y: scroll;
+        overflow-y: auto;   
+        position: absolute;
+        top: 40px;
+        bottom: 40px;
+        left: 5px;
+        right: 5px;
         
         .date {
             float: right;

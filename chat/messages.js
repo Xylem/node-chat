@@ -25,7 +25,12 @@ exports.sendMessage = function(req, res) {
     {
         if (user !== null && user.id !== req.user.id)
         {
-            Message.sendMessage(req.user.id, req.body.to, req.body.message);
+            var message = Message.sendMessage(req.user.id, req.body.to, req.body.message);
+            
+            if (global.connectedUsers[req.body.to] !== undefined) {
+                var socket = global.connectedUsers[req.body.to];
+                socket.emit('newMessage', { from: message.from, id: message.id });
+            }
             
             res.json({ status: 'OK' });
             

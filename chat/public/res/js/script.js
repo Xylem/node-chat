@@ -2,12 +2,13 @@ function applyDraggable(target) {
     target.resizable({
         minHeight: 200,
         minWidth: 200,
-        handles: 'all'
+        handles: 'all',
+        containment: '#content'
     });
     target.draggable({
         stack: '#windows div',
         handle: 'div.handle',
-        containment: 'body'
+        containment: '#content'
     });
 }
 
@@ -28,14 +29,14 @@ function createUserList() {
     });
 }
 
+var users = new Object();
+
 function loadMessages(userId) {
     var parent = $('#window' + userId + ' .messages');
     
     $.getJSON('/messages/user/' + userId,
         function(messages) {
             var msgs = [];
-            
-            var users = new Object();
             
             $.each(messages, function(key, message) {
                 if (users[message.from] === undefined) {
@@ -65,7 +66,7 @@ function createChatWindow(userId) {
     
     $.getJSON('/users/' + userId,
         function(user) {
-            parent.append('<div class="window" id="window' + user._id + '"><div class="handle">' + user.username + '</div><div class="messages"></div><form class="chatForm" method="post" action="/messages" id="form' + user._id + '"><input type="hidden" name="to" value="' + user._id + '"><input type="text" name="message" id="message' + user._id +'"></form></div>');
+            parent.append('<div class="window" id="window' + user._id + '"><div class="handle">' + user.username + '</div><div class="messages"></div><form class="chatForm" method="post" action="/messages" id="form' + user._id + '"><input type="hidden" name="to" value="' + user._id + '"><div class="inputWrapper"><input type="text" name="message" id="message' + user._id +'"></div></form></div>');
             
             applyDraggable($('#window' + user._id)); 
             
@@ -90,5 +91,10 @@ function createChatWindow(userId) {
         } 
     );
 }
+
+var socket = io.connect('http://localhost');
+socket.on('newMessage', function(data) {
+    console.log(data);
+});
 
 createUserList();

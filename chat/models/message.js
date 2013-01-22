@@ -28,6 +28,8 @@ Message.statics.sendMessage = function(from, to, msg) {
     var MessageModel = mongoose.model('messages', Message);
     var message = new MessageModel({ from: from, to: to, message: msg });
     message.save();
+    
+    return message;
 }
 
 Message.methods.markAsRead = function() {
