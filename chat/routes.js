@@ -70,5 +70,6 @@ module.exports = function(app) {
 	app.get('/users/:userId', users.getUser);
 	app.get('/messages/:messageId', messages.getMessage);
 	app.get('/messages/user/:otherUser', messages.getAllMessages);
+	app.get('/messages/unread/:otherUser', messages.countUnread);
 	app.post('/messages', messages.sendMessage);
 }

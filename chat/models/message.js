@@ -10,6 +10,11 @@ var Message = new Schema({
 });
 
 Message.statics.getMessagesBetweenUsers = function(userId, otherUserId, cb) {
+    this.update(
+        {from: otherUserId, to: userId},
+        { unread: false },
+        { multi: true }).exec();
+    
     this.find({
         $or: [ 
             {from: userId, to: otherUserId},
@@ -18,10 +23,22 @@ Message.statics.getMessagesBetweenUsers = function(userId, otherUserId, cb) {
 } 
 
 Message.statics.getMessage = function(userId, messageId, cb) {
+    this.update(
+        {to: userId, _id: messageId },
+        { unread: false }).exec();
+
     this.findOne({ $or: [ 
             {from: userId},
             {to: userId}
              ], _id: messageId }, cb);
+}
+
+Message.statics.countUnread = function(userId, otherUserId, cb) {
+    this.count(
+        {from: otherUserId,
+         to: userId,
+         unread: true},
+         cb);
 }
 
 Message.statics.sendMessage = function(from, to, msg) {

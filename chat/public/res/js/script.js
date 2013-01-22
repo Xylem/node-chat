@@ -20,7 +20,19 @@ function createUserList() {
             var buttons = [];
             
             $.each(users, function(key, user) {
-                buttons.push('<div id="user' + user._id + '"><button onclick="createChatWindow(\'' + user._id + '\')" class="btn btn-link">' + user.username + '</button></div>');       
+                $.ajax({
+		            type: 'GET',
+		            url: '/messages/unread/' + user._id,
+		            dataType: 'json',
+		            success: function(msg) {
+		                var unreadCounter = (msg.unread == 0) ? '' : '<span class="badge badge-warning unread">' + msg.unread + '</span>';
+		                  
+	                    buttons.push('<div id="user' + user._id + '"><button onclick="createChatWindow(\'' + user._id + '\')" class="btn btn-link">' + user.username + '</button>' + unreadCounter + '</div>');       
+		            },
+		            async: false
+	            });
+                
+                
             });
             
             parent.append('<div class="window" id="userlist"><div class="handle">User List</div>' + buttons.join('') + '</div>');
@@ -90,7 +102,7 @@ function createChatWindow(userId) {
     var parent = $('#windows');
     
     $.getJSON('/users/' + userId,
-        function(user) {
+        function(user) {    
             parent.append('<div class="window" id="window' + user._id + '"><div class="handle">' + user.username + '</div><div class="messages"></div><form class="chatForm" method="post" action="/messages" id="form' + user._id + '"><input type="hidden" name="to" value="' + user._id + '"><div class="inputWrapper"><input type="text" name="message" id="message' + user._id +'"></div></form></div>');
             
             applyDraggable($('#window' + user._id)); 

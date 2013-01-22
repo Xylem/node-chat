@@ -18,6 +18,14 @@ exports.getMessage = function(req, res) {
     });
 }
 
+exports.countUnread = function(req, res) {
+    if (!access.validateLoggedIn(req, res)) return;
+    
+    Message.countUnread(req.user.id, req.params.otherUser, function(err, count) {
+        res.json({ unread: count });
+    });    
+}
+
 exports.sendMessage = function(req, res) {
     if (!access.validateLoggedIn(req, res)) return;
 
