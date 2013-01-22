@@ -4,15 +4,16 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "express": "3.x",
+    "express": "3.0.6",
     "express-compiless": "0.0.10",
-    "socket.io": "0.9.x",
-    "jade": "0.28.x",
-    "mongoose": "3.x",
-    "passport": "0.1.x",
-    "passport-local": "0.1.x",
-    "passport-local-mongoose": "0.2.x",
-    "passport.socketio": "0.0.x",
-    "connect-mongo": "0.3.x"
+    "socket.io": "0.9.13",
+    "jade": "0.28.1",
+    "mongoose": "3.5.4",
+    "passport": "0.1.15",
+    "passport-local": "0.1.6",
+    "passport-local-mongoose": "0.2.0",
+    "passport.socketio": "0.0.5",
+    "connect-mongo": "0.3.2",
+    "sanitizer": "0.0.15"
   }
 }

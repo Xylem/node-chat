@@ -1,6 +1,7 @@
 var Message = require('./models/message'),
     User = require('./models/user'),
-    access = require('./access')
+    access = require('./access'),
+    sanitizer = require('sanitizer');
     
 exports.getAllMessages = function(req, res) {
     if (!access.validateLoggedIn(req, res)) return;
@@ -33,7 +34,7 @@ exports.sendMessage = function(req, res) {
     {
         if (user !== null && user.id !== req.user.id)
         {
-            var message = Message.sendMessage(req.user.id, req.body.to, req.body.message);
+            var message = Message.sendMessage(req.user.id, req.body.to, sanitizer.escape(req.body.message));
             
             if (global.connectedUsers[req.body.to] !== undefined) {
                 var socket = global.connectedUsers[req.body.to];

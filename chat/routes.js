@@ -1,7 +1,8 @@
 var passport = require('passport'),
     User = require('./models/user'),
     messages = require('./messages'),
-    users = require('./users');
+    users = require('./users'),
+    sanitizer = require('sanitizer');
 
 
 function redirectNotLoggedIn(res, req) {
@@ -57,7 +58,7 @@ module.exports = function(app) {
 	app.post('/register', function(req, res) {
 	   if (redirectLoggedIn(res, req)) return;
 	
-	   User.register(new User({ username: req.body.username }), req.body.password, function(err, user) {
+	   User.register(new User({ username: sanitizer.escape(req.body.username) }), sanitizer.escape(req.body.password), function(err, user) {
 	       if (err) {
 	           res.redirect('/register');
 	       }
