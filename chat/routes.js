@@ -1,5 +1,7 @@
 var passport = require('passport'),
-    User = require('./models/user');
+    User = require('./models/user'),
+    messages = require('./messages'),
+    users = require('./users');
 
 
 function redirectNotLoggedIn(res, req) {
@@ -63,4 +65,8 @@ module.exports = function(app) {
 	       res.redirect('/login');
 	   });
 	});
+	
+	app.get('/users', users.getAllUsers);
+	app.get('/users/:userId', users.getUser);
+	app.get('/messages/user/:otherUser', messages.getAllMessages);
 }
