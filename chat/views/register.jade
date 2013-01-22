@@ -3,12 +3,8 @@ block styles
     link(rel='stylesheet', href='res/css/login.less')
 block content
     .login.well
-        h2 Please log in
+        h2 Please register
         form(method='post')
             input(type='text', placeholder='Username', name='username').input-block-level
             input(type='password', placeholder='Password', name='password').input-block-level
-            button(type='submit').btn.btn-large.btn-primary Log in
-        hr
-        span.pull-right
-            span Don't have an account? 
-            a(href='/register') Register now
+            button(type='submit').btn.btn-large.btn-primary Register

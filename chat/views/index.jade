@@ -1,5 +1,8 @@
 extend layout
 block content
+    nav
+        a(href='/logout') Log out
+    h2 Logged in as #{user.username}
     #windows
         .window
             .handle Window 1
