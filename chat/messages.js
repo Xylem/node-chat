@@ -21,10 +21,17 @@ exports.getMessage = function(req, res) {
 exports.sendMessage = function(req, res) {
     if (!access.validateLoggedIn(req, res)) return;
 
-    User.getUser(req.body.to, function(err, user))
+    User.getUser(req.body.to, function(err, user)
     {
         if (user !== null && user.id !== req.user.id)
         {
             Message.sendMessage(req.user.id, req.body.to, req.body.message);
+            
+            res.json({ status: 'OK' });
+            
+            return;
         }
-    }
+        
+        res.json({ status: 'ERROR' });
+    });
+}

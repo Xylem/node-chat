@@ -24,11 +24,9 @@ Message.statics.getMessage = function(userId, messageId) {
              ], _id: messageId }, cb);
 }
 
-Message.statics.sendMessage = function(from, to, message) {
-    var message = new Message();
-    message.from = from;
-    message.to = to;
-    message.message = message;
+Message.statics.sendMessage = function(from, to, msg) {
+    var MessageModel = mongoose.model('messages', Message);
+    var message = new MessageModel({ from: from, to: to, message: msg });
     message.save();
 }
 

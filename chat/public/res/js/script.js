@@ -19,6 +19,10 @@ function createUserList() {
     });
 }
 
+function loadMessages(userId) {
+    
+}
+
 function createChatWindow(userId) {   
     if ($('#window' + userId).length != 0) return;
     
@@ -26,9 +30,26 @@ function createChatWindow(userId) {
     
     $.getJSON('/users/' + userId,
         function(user) {
-            parent.append('<div class="window" id="window' + user._id + '"><div class="handle">' + user.username + '</div></div>');
+            parent.append('<div class="window" id="window' + user._id + '"><div class="handle">' + user.username + '</div><div class="messages"></div><form method="post" action="/messages" id="form' + user._id + '"><input type="hidden" name="to" value="' + user._id + '"><input type="text" name="message" id="message' + user._id +'"></form></div>');
             
             applyDraggable($('#window' + user._id)); 
+            
+		    $('#form' + user._id).submit(function() {
+	
+			    var link = $(this).attr('action');
+			
+			    $.ajax({
+			        url: link,
+			        type: "POST",
+			        data: $(this).serialize(),
+			        dataType: "html",         
+			        success: function() {
+			            $('#message' + user._id).val('');
+			        }
+			    });
+			
+			    return false;
+			});
         } 
     );
 }
