@@ -92,9 +92,28 @@ function createChatWindow(userId) {
     );
 }
 
+function incrementMessageCounter(userId, val)
+{
+    val = val || 1;
+    
+    if ($('#user' + userId + ' .unread').length == 0)
+    {
+        $('#user' + userId).append('<span class="badge badge-warning unread">0</span>');
+    }
+    
+    var unread = $('#user' + userId + ' .unread');
+    unread.html(parseInt(unread.html()) + val);
+}
+
 var socket = io.connect('http://localhost');
 socket.on('newMessage', function(data) {
-    console.log(data);
+    var chatWindow = $('#window' + data.from);
+
+    if (chatWindow.length != 0) {
+        
+    } else {
+        incrementMessageCounter(data.from);
+    }
 });
 
 createUserList();
