@@ -1,4 +1,4 @@
-#content {
+body {
     padding: 5px;
 }
 
@@ -16,5 +16,28 @@
         height: 30px;
         width: 100%;
         cursor: move;
+    }
+    
+    .chatForm {
+        input {
+            position: absolute;
+            bottom: 0;
+            height: auto;
+            margin-bottom: 5px;
+            margin-right: 0;
+        }
+    }
+    
+    .messages {
+        overflow-y: scroll;
+        
+        .date {
+            float: right;
+        }
+        
+        .text {
+            display: block;
+            clear: both;
+        }
     }
 }

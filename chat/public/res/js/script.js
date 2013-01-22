@@ -1,5 +1,14 @@
 function applyDraggable(target) {
-    target.draggable({ stack: '#windows div', handle: 'div.handle', containment: 'body'})
+    target.resizable({
+        minHeight: 200,
+        minWidth: 200,
+        handles: 'all'
+    });
+    target.draggable({
+        stack: '#windows div',
+        handle: 'div.handle',
+        containment: 'body'
+    });
 }
 
 function createUserList() {
@@ -20,7 +29,33 @@ function createUserList() {
 }
 
 function loadMessages(userId) {
+    var parent = $('#window' + userId + ' .messages');
     
+    $.getJSON('/messages/user/' + userId,
+        function(messages) {
+            var msgs = [];
+            
+            var users = new Object();
+            
+            $.each(messages, function(key, message) {
+                if (users[message.from] === undefined) {
+                    $.ajax({
+                        type: 'GET',
+                        url: '/users/' + message.from,
+                        dataType: 'json',
+                        success: function(user) {
+                            users[message.from] = user.username;
+                        },
+                        async: false
+                    });
+                }
+            
+                var date = new Date(message.date);
+                msgs.push('<div class="message"><span class="author">' + users[message.from] + '</span><span class="date">' + dateFormat(date, 'H:MM, d mmmm yyyy') + '</span><span class="text">' + message.message + '</span></div>');
+            });
+            
+            parent.append(msgs.join(''));
+    }); 
 }
 
 function createChatWindow(userId) {   
@@ -30,9 +65,11 @@ function createChatWindow(userId) {
     
     $.getJSON('/users/' + userId,
         function(user) {
-            parent.append('<div class="window" id="window' + user._id + '"><div class="handle">' + user.username + '</div><div class="messages"></div><form method="post" action="/messages" id="form' + user._id + '"><input type="hidden" name="to" value="' + user._id + '"><input type="text" name="message" id="message' + user._id +'"></form></div>');
+            parent.append('<div class="window" id="window' + user._id + '"><div class="handle">' + user.username + '</div><div class="messages"></div><form class="chatForm" method="post" action="/messages" id="form' + user._id + '"><input type="hidden" name="to" value="' + user._id + '"><input type="text" name="message" id="message' + user._id +'"></form></div>');
             
             applyDraggable($('#window' + user._id)); 
+            
+            loadMessages(userId);
             
 		    $('#form' + user._id).submit(function() {
 	
