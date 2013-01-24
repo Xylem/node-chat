@@ -2,10 +2,11 @@
     <ul class="nav nav-pills nav-stacked">
         {{#each users}}
         <li id="user{{_id}}">
-            <a onclick="createChatWindow('{{_id}}')">{{username}}</a>
+            <a onclick="createChatWindow('{{_id}}')">{{username}}
             {{#if unread}}
-            {{{unreadBadge}}}
+                {{{unread}}}
             {{/if}}
+            </a>
         </li>
         {{/each}}
     </ul>

@@ -215,7 +215,7 @@ function incrementMessageCounter(userId, val)
             unread: 0
         });
         
-        $('#user' + userId).append(unreadBadge);
+        $('#user' + userId + ' a').append(unreadBadge);
     }
     
     var unread = $('#user' + userId + ' .unread');
