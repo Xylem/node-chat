@@ -2,7 +2,7 @@
     <div class="handle">
         <span class="name">{{name}}</span>
         {{#if close}}
-        <button class="btn btn-link pull-right" onclick="closeWindow('{{id}}')"><i class="icon-remove"></i></button>
+        <button class="close" onclick="closeWindow('{{id}}')">&times;</button>
         {{/if}}
     </div>
     {{{content}}}

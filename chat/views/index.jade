@@ -1,8 +1,19 @@
 extend layout
 block content
-    nav
-        a(href='/logout') Log out
-    h2 Logged in as #{user.username}
+    .navbar.navbar-static-top
+        .navbar-inner
+            span.brand Chat
+            span.btn-group.pull-right
+                span.btn.dropdown-toggle(data-toggle='dropdown')
+                    span
+                        i.icon-user
+                        span  #{user.username} 
+                    span.caret
+                ul.dropdown-menu
+                    li
+                        a(tabindex='-1', href='/logout')
+                            i.icon-off
+                            span  Log out
     #windows
 block scripts
     script(src='/socket.io/socket.io.js')

@@ -3,12 +3,12 @@ function applyDraggable(target) {
         minHeight: 200,
         minWidth: 200,
         handles: 'all',
-        containment: '#content'
+        containment: '#windows'
     });
     target.draggable({
         stack: '#windows div',
         handle: 'div.handle',
-        containment: '#content'
+        containment: '#windows'
     });
 }
 
@@ -61,6 +61,8 @@ function createUserList() {
 var users = {};
 
 function processMessage(message) {
+    // fetch username for ID if not known
+
     if (users[message.from] === undefined) {
         $.ajax({
             type: 'GET',
@@ -75,10 +77,18 @@ function processMessage(message) {
     
     var date = new Date(message.date);
 
+    // replace line breaks with <br> tag
+
+    var messageText = message.message;
+    
+    messageText = messageText.replace(/\r\n/g, '<br>');
+    messageText = messageText.replace(/\r/g, '<br>');
+    messageText = messageText.replace(/\n/g, '<br>');
+
     var messageHtml = Handlebars.templates['message']({
         author: users[message.from],
         date: dateFormat(date, 'H:MM, d mmmm yyyy'),
-        message: message.message
+        message: messageText
     });
     
     return messageHtml;
@@ -129,13 +139,27 @@ function createChatWindow(userId) {
                 userId: user._id
             });
         
-            createWindow('window' + user._id, user.username, chatWindowHtml, true);    
+            var windowId = 'window' + user._id;
+        
+            createWindow(windowId, user.username, chatWindowHtml, true);    
+            
+            moveWindowToTop(windowId);
             
             loadMessages(userId);
             
+            // open chat window on top of user list
+            
+            var pos = $('#userList').css(['left', 'top']);
+           
+            $('#' + windowId).css(pos);
+            
+            // remove unread counter from user list
+            
             $('#user' + userId + ' .unread').remove();
             
-		    $('#form' + user._id).submit(function() {
+            // override form submitting to POST data by AJAX
+            
+		    $('#form' + user._id).submit(function(e) {
 			    var link = $(this).attr('action');
 			
 			    $.ajax({
@@ -150,7 +174,18 @@ function createChatWindow(userId) {
 			        }
 			    });
 			
-			    return false;
+			    e.preventDefault();
+			});
+			
+			// submit form on Enter and insert line break on Shift+Enter
+			
+			$('#message' + user._id).keydown(function(e){
+				if (e.keyCode == 13 && !e.shiftKey)
+				{
+				    $('#form' + user._id).submit();
+				    
+				    e.preventDefault();
+				}
 			});
         } 
     );
@@ -159,6 +194,8 @@ function createChatWindow(userId) {
 function incrementMessageCounter(userId, val)
 {
     val = val || 1;
+    
+    // create unread counter for user if not exists
     
     if ($('#user' + userId + ' .unread').length == 0)
     {
@@ -171,6 +208,22 @@ function incrementMessageCounter(userId, val)
     
     var unread = $('#user' + userId + ' .unread');
     unread.html(parseInt(unread.html()) + val);
+}
+
+function moveWindowToTop(windowId) {
+    var toTop = $('#' + windowId);
+    
+    var maxZIndex = 0;
+    
+    $('.window').each(function() {
+        var thisIndex = parseInt($(this).css('z-index'));
+        
+        if (thisIndex > maxZIndex) {
+            maxZIndex = thisIndex;
+        }
+    });
+    
+    toTop.css('z-index', maxZIndex + 1);
 }
 
 var socket = io.connect('http://localhost');

@@ -1,10 +1,12 @@
 <div class="users">
-    {{#each users}}
-    <div id="user{{_id}}">
-        <button onclick="createChatWindow('{{_id}}')" class="btn btn-link">{{username}}</button>
-        {{#if unread}}
-        {{{unreadBadge}}}
-        {{/if}}
-    </div>
-    {{/each}}
+    <ul class="nav nav-pills nav-stacked">
+        {{#each users}}
+        <li id="user{{_id}}">
+            <a onclick="createChatWindow('{{_id}}')">{{username}}</a>
+            {{#if unread}}
+            {{{unreadBadge}}}
+            {{/if}}
+        </li>
+        {{/each}}
+    </ul>
 </div>

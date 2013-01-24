@@ -3,28 +3,72 @@ html, body {
 }
 
 #content {
-    padding: 5px;
     height: 100%;
+}
+
+#windows {
+    padding: 5px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 50px;
+    overflow: hidden;
 }
 
 @windowPadding: 5px;
 @inputBoxHeight: 30px;
-@handleHeight: 30px;
+@handleHeight: 40px;
+@windowBarsColor: #eee;
 
 .window {
     position: absolute;
-    border: solid 1px #000;
     width: 300px;
     height: 400px;
-    background: #fff;
     padding: @windowPadding;
     
+    /* from bootstrap's modal */
+    
+    background-color: #ffffff;
+    border: 1px solid #999;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    *border: 1px solid #999;
+    -webkit-border-radius: 6px;
+       -moz-border-radius: 6px;
+            border-radius: 6px;
+    outline: none;
+    -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+       -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    -webkit-background-clip: padding-box;
+       -moz-background-clip: padding-box;
+            background-clip: padding-box;
+    
+    /* end from bootstrap's modal */
+    
     .handle {
-        background: #ccc;
-        margin: auto;
+        margin: -@windowPadding;
+        padding: @windowPadding;
+        
+        margin-bottom: 0;
+        padding-bottom: 0;
+        
         height: @handleHeight;
-        width: 100%;
+        
+        -webkit-border-top-left-radius: 5px;
+        -webkit-border-top-right-radius: 5px;
+        -moz-border-radius-topleft: 5px;
+        -moz-border-radius-topright: 5px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        
         cursor: move;
+        background-color: @windowBarsColor;       
+        
+        .name {
+            margin-left: 1em;
+            font-size: 1.2em;
+        }
     }
     
     .chatForm {
@@ -39,13 +83,10 @@ html, body {
             bottom: @windowPadding;
             margin: 0;
             
-            input {
+            textarea {
                 height: @inputBoxHeight;
+                resize: none;
                 margin: 0;
-                width: 100%;
-                box-sizing: border-box;
-                -moz-box-sizing: border-box;
-                -webkit-box-sizing: border-box;
             }
         }
     }
@@ -70,13 +111,21 @@ html, body {
         
         bottom: @inputBoxHeight + 2 * @windowPadding;
         
+        .heading {
+            background: @windowBarsColor;
         
-        .date {
-            float: right;
+            .author {
+                margin-left: 0.5em;
+            }
+            
+            .date {
+                float: right;
+                font-size: 0.7em;
+                margin-right: 0.5em;
+            }
         }
         
         .text {
-            display: block;
             clear: both;
         }
     }
