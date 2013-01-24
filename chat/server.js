@@ -11,6 +11,7 @@ var express                = require('express'),
 	User                   = require('./models/user'),
 	passportSocketIo       = require("passport.socketio"),
 	MongoStore             = require('connect-mongo')(express),
+	handlebarsPrecompiler  = require('handlebars-precompiler'),
 	staticRoot             = __dirname + "/public";
 	
 // globals
@@ -67,6 +68,14 @@ global.io.set("authorization", passportSocketIo.authorize({
 global.io.sockets.on("connection", function(socket){
     global.connectedUsers[socket.handshake.user.id] = socket;
 });
+
+// client-side templates
+
+handlebarsPrecompiler.watchDir(
+    __dirname + '/templates',
+    staticRoot + '/res/js/templates.js',
+    ['handlebars', 'hbs']
+);
 
 //routes
 var routes = require('./routes');

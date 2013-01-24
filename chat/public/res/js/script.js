@@ -12,36 +12,53 @@ function applyDraggable(target) {
     });
 }
 
-function createUserList() {
+function createWindow(id, name, content, close) {
     var parent = $('#windows');
     
+    var window = Handlebars.templates['window']({
+        id: id,
+        name: name,
+        content: content,
+        close: close
+    });
+    
+    parent.append(window);
+    
+    applyDraggable($('#' + id));
+}
+
+function closeWindow(id) {
+    $('#' + id).remove();
+}
+
+function createUserList() {
     $.getJSON('/users',
         function(users) {
-            var buttons = [];
-            
-            $.each(users, function(key, user) {
+            $.each(users, function(key, user) {                
                 $.ajax({
-		            type: 'GET',
-		            url: '/messages/unread/' + user._id,
-		            dataType: 'json',
-		            success: function(msg) {
-		                var unreadCounter = (msg.unread == 0) ? '' : '<span class="badge badge-warning unread">' + msg.unread + '</span>';
-		                  
-	                    buttons.push('<div id="user' + user._id + '"><button onclick="createChatWindow(\'' + user._id + '\')" class="btn btn-link">' + user.username + '</button>' + unreadCounter + '</div>');       
+    	            type: 'GET',
+    	            url: '/messages/unread/' + user._id,
+                    dataType: 'json',
+                    success: function(msg) {
+                        if (msg.unread == 0) {
+                            user.unread = false
+                        } else {
+                            user.unread = Handlebars.templates['unreadBadge'](msg);
+                        }
 		            },
 		            async: false
-	            });
-                
-                
+	            });                
             });
             
-            parent.append('<div class="window" id="userlist"><div class="handle">User List</div><div class="users">' + buttons.join('') + '</div></div>');
+            var userListHtml = Handlebars.templates['userList']({
+                users: users
+            });
             
-            applyDraggable($('#userlist'));    
+            createWindow('userList', 'User List', userListHtml, false);     
     });
 }
 
-var users = new Object();
+var users = {};
 
 function processMessage(message) {
     if (users[message.from] === undefined) {
@@ -57,7 +74,12 @@ function processMessage(message) {
     }
     
     var date = new Date(message.date);
-    var messageHtml = '<div class="message"><span class="author">' + users[message.from] + '</span><span class="date">' + dateFormat(date, 'H:MM, d mmmm yyyy') + '</span><span class="text">' + message.message + '</span></div>';
+
+    var messageHtml = Handlebars.templates['message']({
+        author: users[message.from],
+        date: dateFormat(date, 'H:MM, d mmmm yyyy'),
+        message: message.message
+    });
     
     return messageHtml;
 }
@@ -102,17 +124,18 @@ function createChatWindow(userId) {
     var parent = $('#windows');
     
     $.getJSON('/users/' + userId,
-        function(user) {    
-            parent.prepend('<div class="window" id="window' + user._id + '"><div class="handle">' + user.username + '</div><div class="messages"></div><form class="chatForm" method="post" action="/messages" id="form' + user._id + '"><input type="hidden" name="to" value="' + user._id + '"><div class="inputWrapper"><input type="text" name="message" id="message' + user._id +'"></div></form></div>');
-            
-            applyDraggable($('#window' + user._id)); 
+        function(user) {
+            var chatWindowHtml = Handlebars.templates['chatWindow']({
+                userId: user._id
+            });
+        
+            createWindow('window' + user._id, user.username, chatWindowHtml, true);    
             
             loadMessages(userId);
             
-             $('#user' + userId + ' .unread').remove();
+            $('#user' + userId + ' .unread').remove();
             
 		    $('#form' + user._id).submit(function() {
-	
 			    var link = $(this).attr('action');
 			
 			    $.ajax({
@@ -139,14 +162,18 @@ function incrementMessageCounter(userId, val)
     
     if ($('#user' + userId + ' .unread').length == 0)
     {
-        $('#user' + userId).append('<span class="badge badge-warning unread">0</span>');
+        var unreadBadge = Handlebars.templates['unreadBadge']({
+            unread: 0
+        });
+        
+        $('#user' + userId).append(unreadBadge);
     }
     
     var unread = $('#user' + userId + ' .unread');
     unread.html(parseInt(unread.html()) + val);
 }
 
-var socket = io.connect('http://89.79.1.120');
+var socket = io.connect('http://localhost');
 socket.on('newMessage', function(data) {
     var chatWindow = $('#window' + data.from);
 

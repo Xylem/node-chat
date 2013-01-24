@@ -1,0 +1,9 @@
+<div class="window" id="{{id}}">
+    <div class="handle">
+        <span class="name">{{name}}</span>
+        {{#if close}}
+        <button class="btn btn-link pull-right" onclick="closeWindow('{{id}}')"><i class="icon-remove"></i></button>
+        {{/if}}
+    </div>
+    {{{content}}}
+</div>

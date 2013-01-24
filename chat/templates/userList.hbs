@@ -1,0 +1,10 @@
+<div class="users">
+    {{#each users}}
+    <div id="user{{_id}}">
+        <button onclick="createChatWindow('{{_id}}')" class="btn btn-link">{{username}}</button>
+        {{#if unread}}
+        {{{unreadBadge}}}
+        {{/if}}
+    </div>
+    {{/each}}
+</div>
