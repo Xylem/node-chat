@@ -34,6 +34,18 @@ function closeWindow(id) {
 function createUserList() {
     $.getJSON('/users',
         function(users) {
+            users.sort(function (a, b) {
+                usernameA = a.username.toLowerCase();
+                usernameB = b.username.toLowerCase();
+                
+                if (usernameA < usernameB) {
+                    return -1;
+                } else if (usernameA > usernameB) {
+                    return 1;
+                }
+                return 0;
+            });
+        
             $.each(users, function(key, user) {                
                 $.ajax({
     	            type: 'GET',
