@@ -7,18 +7,22 @@ html, body {
     height: 100%;
 }
 
+@windowPadding: 5px;
+@inputBoxHeight: 30px;
+@handleHeight: 30px;
+
 .window {
     position: absolute;
     border: solid 1px #000;
     width: 300px;
     height: 400px;
     background: #fff;
-    padding: 5px;
+    padding: @windowPadding;
     
     .handle {
         background: #ccc;
         margin: auto;
-        height: 30px;
+        height: @handleHeight;
         width: 100%;
         cursor: move;
     }
@@ -30,13 +34,13 @@ html, body {
         
         .inputWrapper {   
             position: absolute;
-            left: 5px;
-            right: 5px;
-            bottom: 5px;
+            left: @windowPadding;
+            right: @windowPadding;
+            bottom: @windowPadding;
             margin: 0;
             
             input {
-                height: 30px;
+                height: @inputBoxHeight;
                 margin: 0;
                 width: 100%;
                 box-sizing: border-box;
@@ -46,13 +50,25 @@ html, body {
         }
     }
     
-    .messages {
+    .windowContent () {
         overflow-y: auto;   
         position: absolute;
-        top: 40px;
-        bottom: 40px;
-        left: 5px;
-        right: 5px;
+        top: @handleHeight + 2 * @windowPadding;
+        left: @windowPadding;
+        right: @windowPadding;
+    }
+    
+    .users {
+        .windowContent;
+        
+        bottom: @windowPadding;
+    }
+    
+    .messages {
+        .windowContent;
+        
+        bottom: @inputBoxHeight + 2 * @windowPadding;
+        
         
         .date {
             float: right;

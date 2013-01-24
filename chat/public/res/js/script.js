@@ -35,7 +35,7 @@ function createUserList() {
                 
             });
             
-            parent.append('<div class="window" id="userlist"><div class="handle">User List</div>' + buttons.join('') + '</div>');
+            parent.append('<div class="window" id="userlist"><div class="handle">User List</div><div class="users">' + buttons.join('') + '</div></div>');
             
             applyDraggable($('#userlist'));    
     });
@@ -103,7 +103,7 @@ function createChatWindow(userId) {
     
     $.getJSON('/users/' + userId,
         function(user) {    
-            parent.append('<div class="window" id="window' + user._id + '"><div class="handle">' + user.username + '</div><div class="messages"></div><form class="chatForm" method="post" action="/messages" id="form' + user._id + '"><input type="hidden" name="to" value="' + user._id + '"><div class="inputWrapper"><input type="text" name="message" id="message' + user._id +'"></div></form></div>');
+            parent.prepend('<div class="window" id="window' + user._id + '"><div class="handle">' + user.username + '</div><div class="messages"></div><form class="chatForm" method="post" action="/messages" id="form' + user._id + '"><input type="hidden" name="to" value="' + user._id + '"><div class="inputWrapper"><input type="text" name="message" id="message' + user._id +'"></div></form></div>');
             
             applyDraggable($('#window' + user._id)); 
             
@@ -146,7 +146,7 @@ function incrementMessageCounter(userId, val)
     unread.html(parseInt(unread.html()) + val);
 }
 
-var socket = io.connect('http://localhost');
+var socket = io.connect('http://89.79.1.120');
 socket.on('newMessage', function(data) {
     var chatWindow = $('#window' + data.from);
 
