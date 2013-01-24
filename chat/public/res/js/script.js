@@ -31,9 +31,62 @@ function closeWindow(id) {
     $('#' + id).remove();
 }
 
+
+function createUserItem(user) {
+    $.ajax({
+        type: 'GET',
+        url: '/messages/unread/' + user._id,
+        dataType: 'json',
+        success: function(msg) {
+            if (msg.unread == 0) {
+                user.unread = false
+            } else {
+                user.unread = Handlebars.templates['unreadBadge'](msg);
+            }
+        },
+        async: false
+    });
+    
+    var userItemHtml = Handlebars.templates['userItem'](user); 
+    
+    return userItemHtml;      
+}
+
+var nameLookup = {};
+var allUsers;
+var self;
+
+function getSelf() {
+    $.ajax({
+            type: 'GET',
+            url: '/self',
+            dataType: 'json',
+            success: function(user) {
+                self = user;
+            },
+            async: false
+        });
+}
+
+function getUser(userId) {
+    var fetchedUser;
+
+    $.ajax({
+            type: 'GET',
+            url: '/users/' + userId,
+            dataType: 'json',
+            success: function(user) {
+                fetchedUser = user;
+            },
+            async: false
+        });
+        
+    return fetchedUser;
+}
+
 function createUserList() {
     $.getJSON('/users',
-        function(users) {
+        function(users) {       
             users.sort(function (a, b) {
                 usernameA = a.username.toLowerCase();
                 usernameB = b.username.toLowerCase();
@@ -45,21 +98,13 @@ function createUserList() {
                 }
                 return 0;
             });
+            
+            allUsers = users;
         
-            $.each(users, function(key, user) {                
-                $.ajax({
-    	            type: 'GET',
-    	            url: '/messages/unread/' + user._id,
-                    dataType: 'json',
-                    success: function(msg) {
-                        if (msg.unread == 0) {
-                            user.unread = false
-                        } else {
-                            user.unread = Handlebars.templates['unreadBadge'](msg);
-                        }
-		            },
-		            async: false
-	            });                
+            $.each(users, function(key, user) {
+                nameLookup[user._id] = user.username;
+                                
+                user.userItem = createUserItem(user);            
             });
             
             var userListHtml = Handlebars.templates['userList']({
@@ -70,22 +115,8 @@ function createUserList() {
     });
 }
 
-var users = {};
-
 function processMessage(message) {
-    // fetch username for ID if not known
-
-    if (users[message.from] === undefined) {
-        $.ajax({
-            type: 'GET',
-            url: '/users/' + message.from,
-            dataType: 'json',
-            success: function(user) {
-                users[message.from] = user.username;
-            },
-            async: false
-        });
-    }
+    var author = (nameLookup[message.from] === undefined) ? self.username : nameLookup[message.from];
     
     var date = new Date(message.date);
 
@@ -98,7 +129,7 @@ function processMessage(message) {
     messageText = messageText.replace(/\n/g, '<br>');
 
     var messageHtml = Handlebars.templates['message']({
-        author: users[message.from],
+        author: author,
         date: dateFormat(date, 'H:MM, d mmmm yyyy'),
         message: messageText
     });
@@ -239,6 +270,7 @@ function moveWindowToTop(windowId) {
 }
 
 var socket = io.connect('http://localhost');
+
 socket.on('newMessage', function(data) {
     var chatWindow = $('#window' + data.from);
 
@@ -249,4 +281,33 @@ socket.on('newMessage', function(data) {
     }
 });
 
+socket.on('newUser', function(data) {
+    var newUser = getUser(data.user);
+    
+    var lowerCaseName = newUser.username.toLowerCase();
+    
+    var insertBefore = null;
+
+    for (var i = 0; i < allUsers.length; ++i) {
+        if (lowerCaseName < allUsers[i].username.toLowerCase()) {
+            insertBefore = allUsers[i];
+            
+            allUsers.splice(i, 0, newUser);
+            
+            break;
+        }
+    }
+    
+    var newUserItem = createUserItem(newUser);
+    
+    if (insertBefore === null) {
+        allUsers.push(newUser);
+        
+        $('#allUsers').append(newUserItem);
+    } else {
+        $('#user' + insertBefore._id).before(newUserItem);
+    }
+});
+
+getSelf();
 createUserList();

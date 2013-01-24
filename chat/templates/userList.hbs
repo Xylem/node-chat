@@ -1,13 +1,7 @@
 <div class="users">
-    <ul class="nav nav-pills nav-stacked">
+    <ul id="allUsers" class="nav nav-pills nav-stacked">
         {{#each users}}
-        <li id="user{{_id}}">
-            <a onclick="createChatWindow('{{_id}}')">{{username}}
-            {{#if unread}}
-                {{{unread}}}
-            {{/if}}
-            </a>
-        </li>
+        {{{userItem}}}
         {{/each}}
     </ul>
 </div>

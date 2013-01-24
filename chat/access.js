@@ -7,3 +7,23 @@ exports.validateLoggedIn = function(req, res) {
     
     return true;
 }
+
+exports.redirectNotLoggedIn = function(res, req) {
+    if (req.user === undefined)
+    {
+        res.redirect('/login');
+        return true;
+    }
+    
+    return false;
+}
+
+exports.redirectLoggedIn = function(res, req) {
+    if (req.user !== undefined)
+    {
+        res.redirect('/');
+        return true;
+    }
+    
+    return false;
+}
