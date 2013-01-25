@@ -6,28 +6,38 @@ html, body {
     height: 100%;
 }
 
-#windows {
-    padding: 5px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 50px;
-    overflow: hidden;
-}
+
+@desktopPadding: 5px;
+@desktopTopDistance: 50px;
 
 @windowPadding: 5px;
-@inputBoxHeight: 30px;
+@inputBoxHeight: 50px;
 @handleHeight: 40px;
 @windowBarsColor: #eee;
 @onlineColor: #0c0;
 @offlineColor: #ccc;
 @statusSize: 10px;
 
+#windows {
+    padding: @desktopPadding;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: @desktopTopDistance;
+    overflow: hidden;
+}
+
 .border-radius (@radius) {
     -webkit-border-radius: @radius;
        -moz-border-radius: @radius;
             border-radius: @radius;    
+}
+
+.border-radius (@tl, @tr, @br, @bl) {
+    -webkit-border-radius: @tl @tr @br @bl;
+       -moz-border-radius: @tl @tr @br @bl;
+            border-radius: @tl @tr @br @bl;    
 }
 
 .window {
@@ -64,12 +74,7 @@ html, body {
         
         height: @handleHeight;
         
-        -webkit-border-top-left-radius: 5px;
-        -webkit-border-top-right-radius: 5px;
-        -moz-border-radius-topleft: 5px;
-        -moz-border-radius-topright: 5px;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
+        .border-radius(5px, 5px, 0, 0);
         
         cursor: move;
         background-color: @windowBarsColor;       
@@ -91,11 +96,31 @@ html, body {
             right: @windowPadding;
             bottom: @windowPadding;
             margin: 0;
+            overflow: hidden;
             
-            textarea {
+            .textareaWrapper {
+                display: block;
+                overflow: hidden;
+                
+                textarea {
+                    height: @inputBoxHeight;
+                    resize: none;
+                    margin: 0;
+                    width: 100%;
+                    
+                    -webkit-box-sizing: border-box;
+                    -moz-box-sizing: border-box;
+                    box-sizing: border-box; 
+                    
+                    .border-radius(3px, 0, 0, 3px);
+                }
+            }
+            
+            button {
                 height: @inputBoxHeight;
-                resize: none;
-                margin: 0;
+                float: right;
+                
+                .border-radius(0, 3px, 3px, 0);
             }
         }
     }

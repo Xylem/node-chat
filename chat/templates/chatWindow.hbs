@@ -3,6 +3,9 @@
 <form class="chatForm" method="post" action="/messages" id="form{{userId}}">
     <input type="hidden" name="to" value="{{userId}}">
     <div class="inputWrapper">
-        <textarea class="input-block-level" name="message" id="message{{userId}}"></textarea>
+        <button class="btn" type="button" id="sendFile{{userId}}"><i class="icon-file"></i></button>
+        <span class="textareaWrapper">
+            <textarea name="message" id="message{{userId}}"></textarea>
+        </span>
     </div>
 </form>

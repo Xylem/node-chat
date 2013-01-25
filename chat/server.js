@@ -73,7 +73,7 @@ global.io.sockets.on("connection", function(socket){
     socket.broadcast.emit('statusChange', { user: socket.handshake.user.id, online: true, sent: sentDate });
     
     socket.on('disconnect', function() {
-        if (socket.id == global.connectedUsers[socket.handshake.user.id].id) {
+        if (global.connectedUsers[socket.handshake.user.id] !== undefined && socket.id == global.connectedUsers[socket.handshake.user.id].id) {
 	        var sentDate = new Date().getTime();
 	    
 	        socket.broadcast.emit('statusChange', { user: socket.handshake.user.id, online: false, sent: sentDate });
