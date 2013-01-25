@@ -299,7 +299,7 @@ function moveWindowToTop(windowId) {
     toTop.css('z-index', maxZIndex + 1);
 }
 
-var socket = io.connect('http://localhost');
+var socket = io.connect('/');
 
 socket.on('newMessage', function(data) {
     var chatWindow = $('#window' + data.from);

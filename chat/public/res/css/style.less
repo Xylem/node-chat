@@ -24,6 +24,12 @@ html, body {
 @offlineColor: #ccc;
 @statusSize: 10px;
 
+.border-radius (@radius) {
+    -webkit-border-radius: @radius;
+       -moz-border-radius: @radius;
+            border-radius: @radius;    
+}
+
 .window {
     position: absolute;
     width: 300px;
@@ -32,13 +38,13 @@ html, body {
     
     /* from bootstrap's modal */
     
+    .border-radius(6px);
+    
     background-color: #ffffff;
     border: 1px solid #999;
     border: 1px solid rgba(0, 0, 0, 0.3);
     *border: 1px solid #999;
-    -webkit-border-radius: 6px;
-       -moz-border-radius: 6px;
-            border-radius: 6px;
+
     outline: none;
     -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
        -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
@@ -111,9 +117,8 @@ html, body {
         
         
         .circle (@diameter) {
-            -webkit-border-radius: 50%;
-               -moz-border-radius: 50%;
-                    border-radius: 50%;
+            .border-radius(50%);
+            
             width: @diameter;
             height: @diameter;
         }
@@ -139,13 +144,16 @@ html, body {
         
         .heading {
             background: @windowBarsColor;
+            overflow: hidden;
+            
+            .border-radius(3px);
         
             .author {
                 margin-left: 0.5em;
             }
             
             .date {
-                float: right;
+                float: right;                
                 font-size: 0.7em;
                 margin-right: 0.5em;
             }
