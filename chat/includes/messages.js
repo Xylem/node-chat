@@ -34,14 +34,31 @@ exports.sendMessage = function(req, res) {
     {
         if (user !== null && user.id !== req.user.id)
         {
-            var message = Message.sendMessage(req.user.id, req.body.to, sanitizer.escape(req.body.message));
-            
-            if (global.connectedUsers[req.body.to] !== undefined) {
-                var socket = global.connectedUsers[req.body.to];
-                socket.emit('newMessage', { from: message.from, id: message.id });
-            }
-            
-            res.json(message);
+            var message = sendMessageDirect(req.user.id, req.body.to, sanitizer.escape(req.body.message));
         }
+        
+        res.json('OK');
+        
+        return;
     });
+    
+    res.json('ERROR');
 }
+
+function sendMessageDirect(from, to, msg) {
+    var message = Message.sendMessage(from, to, msg);
+            
+    if (global.connectedUsers[message.to] !== undefined) {
+        var socket = global.connectedUsers[message.to];
+        socket.emit('newMessage', { from: message.from, id: message.id });
+    }
+    
+    if (global.connectedUsers[message.from] !== undefined) {
+        var socket = global.connectedUsers[message.from];
+        socket.emit('newMessage', { from: message.to, id: message.id });
+    }
+    
+    return message;
+}
+
+exports.sendMessageDirect = sendMessageDirect;

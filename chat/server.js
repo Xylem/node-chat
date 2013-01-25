@@ -38,7 +38,9 @@ app.use(compiless(
 app.use(express.static(staticRoot));
 
 app.use(express.logger());
-app.use(express.bodyParser());
+app.use(express.bodyParser({
+    uploadDir:'./uploads'
+}));
 
 app.use(express.cookieParser('totally unguessable secret'));
 

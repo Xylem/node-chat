@@ -49,9 +49,4 @@ Message.statics.sendMessage = function(from, to, msg) {
     return message;
 }
 
-Message.methods.markAsRead = function() {
-    this.unread = false;
-    this.save();
-}
-
 module.exports = mongoose.model('messages', Message);

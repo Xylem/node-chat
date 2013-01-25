@@ -81,8 +81,17 @@ html, body {
         
         .name {
             margin-left: 1em;
-            font-size: 1.2em;
+            display: inline-block;
         }
+    }
+    
+    .fileUpload {
+        /* workaround - display: none; breaks functionality on Opera */
+        
+        visibility: hidden;
+        position: absolute;
+        top: 0;
+        left: -9999px;
     }
     
     .chatForm {

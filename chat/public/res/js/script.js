@@ -242,8 +242,6 @@ function createChatWindow(userId) {
 			        dataType: 'json',         
 			        success: function(data) {
 			            $('#message' + user._id).val('');
-			            
-			            appendToMessages($('#window' + user._id + ' .messages'), processMessage(data));
 			        }
 			    });
 			
@@ -259,6 +257,23 @@ function createChatWindow(userId) {
 				    
 				    e.preventDefault();
 				}
+			});
+			
+			// create uploader for window
+			
+			var fileInput = $('#file' + user._id);
+			
+			fileInput.html5_upload({
+                url: '/files',
+                autostart: true,
+                autoclear: true,
+                sendBoundary: true,
+                fieldName: 'file',
+                extraFields: { to: user._id }
+			});
+			
+			$('#sendFile' + user._id).click(function() {
+			    fileInput.click();
 			});
         } 
     );

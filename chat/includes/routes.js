@@ -2,6 +2,7 @@ var passport = require('passport'),
     User = require('../models/user'),
     messages = require('./messages'),
     users = require('./users'),
+    files = require('./files'),
     access = require('./access');
 
 module.exports = function(app) {
@@ -43,4 +44,6 @@ module.exports = function(app) {
 	app.get('/messages/user/:otherUser', messages.getAllMessages);
 	app.get('/messages/unread/:otherUser', messages.countUnread);
 	app.post('/messages', messages.sendMessage);
+	app.post('/files', files.uploadFiles);
+	app.get('/files/:fileId', files.getFile);
 }
