@@ -1,7 +1,9 @@
 <li id="user{{_id}}">
-    <a onclick="createChatWindow('{{_id}}')">{{username}}
-    {{#if unread}}
-    {{{unread}}}
-    {{/if}}
+    <a onclick="createChatWindow('{{_id}}')">
+        <div class="status offline"></div>
+        {{username}}
+        {{#if unread}}
+        {{{unread}}}
+        {{/if}}
     </a>
 </li>

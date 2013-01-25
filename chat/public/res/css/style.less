@@ -20,6 +20,9 @@ html, body {
 @inputBoxHeight: 30px;
 @handleHeight: 40px;
 @windowBarsColor: #eee;
+@onlineColor: #0c0;
+@offlineColor: #ccc;
+@statusSize: 10px;
 
 .window {
     position: absolute;
@@ -104,6 +107,29 @@ html, body {
         .windowContent;
         
         bottom: @windowPadding;
+        
+        
+        
+        .circle (@diameter) {
+            -webkit-border-radius: 50%;
+               -moz-border-radius: 50%;
+                    border-radius: 50%;
+            width: @diameter;
+            height: @diameter;
+        }
+        
+        .status {
+            display: inline-block;
+            .circle(@statusSize);
+        }
+        
+        .online {
+            background-color: @onlineColor;
+        }
+        
+        .offline {
+            background-color: @offlineColor;
+        }
     }
     
     .messages {

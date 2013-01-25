@@ -43,3 +43,9 @@ exports.getSelf = function(req, res) {
         res.json(user);
     });
 }
+
+exports.getOnline = function(req, res) {
+    if (!access.validateLoggedIn(req, res)) return;
+    
+    res.json({ online: Object.keys(global.connectedUsers) });
+}

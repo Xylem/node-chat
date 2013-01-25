@@ -84,6 +84,30 @@ function getUser(userId) {
     return fetchedUser;
 }
 
+function getOnline() {
+    var onlineUsers;
+
+    $.ajax({
+            type: 'GET',
+            url: '/online',
+            dataType: 'json',
+            success: function(online) {
+                onlineUsers = online;
+            },
+            async: false
+        });
+        
+    return onlineUsers;
+}
+
+function setStatus(userId, online) {
+    var statusElement = $('#user' + userId + ' .status');
+    
+    var newStatus = online ? 'online' : 'offline';
+    
+    statusElement.attr('class', 'status ' + newStatus);
+}
+
 function createUserList() {
     $.getJSON('/users',
         function(users) {       
@@ -111,7 +135,13 @@ function createUserList() {
                 users: users
             });
             
-            createWindow('userList', 'User List', userListHtml, false);     
+            createWindow('userList', 'User List', userListHtml, false);   
+            
+            var onlineUsers = getOnline();
+            
+            $.each(onlineUsers.online, function(key, userId) {
+                setStatus(userId, true);    
+            });  
     });
 }
 
@@ -306,6 +336,16 @@ socket.on('newUser', function(data) {
         $('#allUsers').append(newUserItem);
     } else {
         $('#user' + insertBefore._id).before(newUserItem);
+    }
+});
+
+var lastUpdate = {};
+
+socket.on('statusChange', function(data) {
+    if (lastUpdate[data.user] === undefined || lastUpdate[data.user] < data.sent) {
+        lastUpdate[data.user] = data.sent;
+        
+        setStatus(data.user, data.online);
     }
 });
 

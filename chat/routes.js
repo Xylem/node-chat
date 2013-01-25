@@ -38,6 +38,7 @@ module.exports = function(app) {
 	app.get('/users', users.getAllUsers);
     app.get('/self', users.getSelf);
 	app.get('/users/:userId', users.getUser);
+	app.get('/online', users.getOnline);
 	app.get('/messages/:messageId', messages.getMessage);
 	app.get('/messages/user/:otherUser', messages.getAllMessages);
 	app.get('/messages/unread/:otherUser', messages.countUnread);

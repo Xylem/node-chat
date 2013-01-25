@@ -67,6 +67,20 @@ global.io.set("authorization", passportSocketIo.authorize({
 
 global.io.sockets.on("connection", function(socket){
     global.connectedUsers[socket.handshake.user.id] = socket;
+    
+    var sentDate = new Date().getTime();
+    
+    socket.broadcast.emit('statusChange', { user: socket.handshake.user.id, online: true, sent: sentDate });
+    
+    socket.on('disconnect', function() {
+        if (socket.id == global.connectedUsers[socket.handshake.user.id].id) {
+	        var sentDate = new Date().getTime();
+	    
+	        socket.broadcast.emit('statusChange', { user: socket.handshake.user.id, online: false, sent: sentDate });
+	    
+	        delete global.connectedUsers[socket.handshake.user.id];
+        }
+    });
 });
 
 // client-side templates
