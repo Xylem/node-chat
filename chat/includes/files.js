@@ -19,12 +19,8 @@ exports.uploadFiles = function(req, res) {
             messages.sendMessageDirect(req.user.id, req.body.to, downloadLink);
         }
         
-        res.json('OK');
-        
-        return;
+        res.json({ status: 'OK'});
     });
-    
-    res.json('ERROR');
 }
 
 exports.getFile = function(req, res) {

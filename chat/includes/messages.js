@@ -37,12 +37,8 @@ exports.sendMessage = function(req, res) {
             var message = sendMessageDirect(req.user.id, req.body.to, sanitizer.escape(req.body.message));
         }
         
-        res.json('OK');
-        
-        return;
+        res.json({ status: 'OK'});
     });
-    
-    res.json('ERROR');
 }
 
 function sendMessageDirect(from, to, msg) {
