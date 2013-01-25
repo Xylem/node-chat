@@ -1,5 +1,5 @@
-var Message = require('./models/message'),
-    User = require('./models/user'),
+var Message = require('../models/message'),
+    User = require('../models/user'),
     access = require('./access'),
     sanitizer = require('sanitizer');
     

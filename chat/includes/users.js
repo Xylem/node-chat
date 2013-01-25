@@ -1,4 +1,4 @@
-var User = require('./models/user'),
+var User = require('../models/user'),
     sanitizer = require('sanitizer'),
     access = require('./access')
     

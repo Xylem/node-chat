@@ -1,5 +1,5 @@
 var passport = require('passport'),
-    User = require('./models/user'),
+    User = require('../models/user'),
     messages = require('./messages'),
     users = require('./users'),
     access = require('./access');

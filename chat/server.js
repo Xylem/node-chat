@@ -92,7 +92,7 @@ handlebarsPrecompiler.watchDir(
 );
 
 //routes
-var routes = require('./routes');
+var routes = require('./includes/routes');
 routes(app);
 
 // db connection
