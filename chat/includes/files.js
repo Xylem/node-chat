@@ -27,10 +27,10 @@ exports.getFile = function(req, res) {
     if (!access.validateLoggedIn(req, res)) return;
 
     File.getFile(req.user.id, req.params.fileId, function(err, file) {          
-        if (file.path !== undefined) {
+        if (file !== undefined && file !== null && file.path !== undefined) {
             res.download(file.path, file.name);
         } else {
-            res.status(404);
+            res.send(404, 'Not Found');
         }
     });
 }

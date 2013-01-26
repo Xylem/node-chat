@@ -99,7 +99,6 @@ routes(app);
 
 // db connection
 mongoose.connect('mongodb://localhost/test');   
-
     
 // start server
     
