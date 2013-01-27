@@ -343,6 +343,8 @@ socket.on('newUser', function(data) {
         }
     }
     
+    nameLookup[newUser._id] = newUser.username;
+    
     var newUserItem = createUserItem(newUser);
     
     if (insertBefore === null) {
